@@ -1,19 +1,11 @@
-# Use a base image with a minimal web server
-FROM alpine:3.5
+# Use a lightweight base image
+FROM nginx:alpine
 
-#install python and pip
-RUN apk add --update py2-pip
+# Copy the Index1.html file to the default Nginx web root directory
+COPY Index1.html /usr/share/nginx/html
 
-# install pipeline module needed by the python app
-COPY requirement.txt /usr/src/app/
-RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
+# Expose port 80 to allow external access
+EXPOSE 80
 
-#copy files required for the app to run
-COPY app.py /usr/src/app/ 
-COPY templates/index.html /usr/src/app/templates/
-
-# tell the port number the container should expose
-EXPOSE 5000
-
-#run the application
-CMD [ "python", "/usr/src/app/app.py" ]
+# Command to start the Nginx web server
+CMD ["nginx", "-g", "daemon off;"]
